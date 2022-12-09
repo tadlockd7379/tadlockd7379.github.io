@@ -48,6 +48,10 @@
         document.getElementById('selectedSeason').add(option);
     }
 
+    function sortByDate(a, b) {
+        return new Date(a.game.date).getTime() - new Date(b.game.date).getTime();
+    }
+
     async function statsForSeason(season = selected.options[selected.selectedIndex].value) {
         document.getElementById('statsBody').innerHTML = '';
 
@@ -57,6 +61,8 @@
 
         const giannis = json.data;
 
+        giannis.sort(sortByDate);
+        
         let track = ['pts', 'ast', 'reb', 'stl', 'blk', 'fg_pct', 'fg3_pct', 'ft_pct', 'turnover', 'min'];
 
         giannis.forEach(game => {
