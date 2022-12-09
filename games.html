@@ -49,7 +49,7 @@
     }
 
     function sortByDate(a, b) {
-        return new Date(a.game.date).getTime() - new Date(b.game.date).getTime();
+        return new Date(b.game.date).getTime() - new Date(a.game.date).getTime();
     }
 
     async function statsForSeason(season = selected.options[selected.selectedIndex].value) {
