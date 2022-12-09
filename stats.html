@@ -47,12 +47,10 @@
     async function main() {
         const seasons = [];
 
-        for (let i = 2013; i <= new Date().getFullYear(); i++) {
+        for (let i = new Date().getFullYear(); i > 2013; i--) {
             seasons.push(await seasonAverages(i));
         }
-        
-        seasons.reverse();
-
+    
         let track = ['season', 'games_played', 'pts', 'ast', 'reb', 'stl', 'blk', 'fg_pct', 'fg3_pct', 'ft_pct', 'turnover', 'min'];
 
         seasons.forEach(season => {

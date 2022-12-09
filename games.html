@@ -10,12 +10,14 @@
 <body>
     <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="games.html" style="text-decoration: underline;">Games (Current Season)</a></li>
+        <li><a href="games.html" style="text-decoration: underline;">Games</a></li>
         <li><a href="stats.html">Stats (All seasons)</a></li>
         <li><a href="about.html">About Me</a></li>
     </ul>
 
-    <h2>This Season</h2>
+    <h2>Games</h2>
+    <select id="selectedSeason" onchange="statsForSeason()"></select>
+
     <table id="stats">
         <tr>
             <th>Date</th>
@@ -30,13 +32,26 @@
             <th>Turnovers</th>
             <th>Minutes</th>
         </tr>
+        <tbody id="statsBody">
+        </tbody>
     </table>
 </body>
 <script>
-    const table = document.getElementById('stats');
+    const table = document.getElementById('statsBody');
 
-    async function main() {
-        const req = await fetch(`https://www.balldontlie.io/api/v1/stats?player_ids[]=15&seasons[]=2022&per_page=82&postseason=false`);
+    const selected = document.getElementById('selectedSeason');
+    const seasons = [];
+
+    for (let i = new Date().getFullYear(); i >= 2013; i--) {
+        let option = document.createElement('option');
+        option.text = i.toString(); 
+        document.getElementById('selectedSeason').add(option);
+    }
+
+    async function statsForSeason(season = selected.options[selected.selectedIndex].value) {
+        document.getElementById('statsBody').innerHTML = '';
+
+        const req = await fetch(`https://www.balldontlie.io/api/v1/stats?player_ids[]=15&seasons[]=${season}&per_page=82&postseason=false`);
         if (req.status === 429) return alert('Rate limited... Only allowed 60 requests a minute.');
         const json = await req.json();
 
@@ -45,7 +60,6 @@
         let track = ['pts', 'ast', 'reb', 'stl', 'blk', 'fg_pct', 'fg3_pct', 'ft_pct', 'turnover', 'min'];
 
         giannis.forEach(game => {
-            console.log(game);
             let row = table.insertRow(-1);
 
             row.insertCell(-1).innerHTML = '&nbsp;</td>' + new Date(game.game.date).toISOString().replace('-', '/').split('T')[0].replace('-', '/') + '&nbsp;</td>';
@@ -63,6 +77,6 @@
         });
     }
 
-    main();
+    statsForSeason();
 </script>
 </html>
